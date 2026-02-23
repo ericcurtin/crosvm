@@ -48,7 +48,7 @@ impl Tube {
         self.send_with_max_fds(msg, TUBE_MAX_FDS)
     }
 
-    /// Recieves a message from a Tube.
+    /// Receives a message from a Tube.
     /// If the sender sent file descriptors more than TUBE_MAX_FDS with `send_with_max_fds`, use
     /// `recv_with_max_fds` instead.
     pub fn recv<T: DeserializeOwned>(&self) -> Result<T> {

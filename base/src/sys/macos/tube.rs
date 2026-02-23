@@ -79,7 +79,7 @@ impl Tube {
         Ok(())
     }
 
-    /// Recieves a message with at most `max_fds` file descriptors from a Tube.
+    /// Receives a message with at most `max_fds` file descriptors from a Tube.
     ///
     /// Reads the u64 length header first, then reads the message body.
     pub fn recv_with_max_fds<T: DeserializeOwned>(&self, max_fds: usize) -> Result<T> {

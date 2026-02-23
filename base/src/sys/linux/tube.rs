@@ -49,7 +49,7 @@ impl Tube {
         Ok(())
     }
 
-    /// Recieves a message with at most `max_fds` file descriptors from a Tube.
+    /// Receives a message with at most `max_fds` file descriptors from a Tube.
     pub fn recv_with_max_fds<T: DeserializeOwned>(&self, max_fds: usize) -> Result<T> {
         if max_fds > SCM_SOCKET_MAX_FD_COUNT {
             return Err(Error::RecvTooManyFds);
