@@ -27,7 +27,6 @@ mod file_traits;
 mod mmap;
 mod net;
 mod netlink;
-mod notifiers;
 pub mod platform_timer_resolution;
 mod poll;
 mod priority;
@@ -37,6 +36,7 @@ pub mod signal;
 mod signalfd;
 mod terminal;
 mod timer;
+mod tube;
 pub mod vsock;
 mod write_zeroes;
 

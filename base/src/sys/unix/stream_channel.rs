@@ -143,8 +143,17 @@ impl StreamChannel {
                 (SocketType::Byte(pipe_a), SocketType::Byte(pipe_b))
             }
             FramingMode::Message => {
-                let (pipe_a, pipe_b) = UnixSeqpacket::pair()?;
-                (SocketType::Message(pipe_a), SocketType::Message(pipe_b))
+                // SOCK_SEQPACKET is only available on Linux/Android. On macOS,
+                // UnixSeqpacket::pair() is not available since macOS does not
+                // support SOCK_SEQPACKET for Unix domain sockets.
+                cfg_if::cfg_if! {
+                    if #[cfg(any(target_os = "android", target_os = "linux"))] {
+                        let (pipe_a, pipe_b) = UnixSeqpacket::pair()?;
+                        (SocketType::Message(pipe_a), SocketType::Message(pipe_b))
+                    } else {
+                        return Err(crate::Error::new(libc::ENOTSUP));
+                    }
+                }
             }
         };
         let mut stream_a = StreamChannel { stream: pipe_a };

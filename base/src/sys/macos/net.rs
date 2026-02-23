@@ -33,7 +33,6 @@ use libc::SOL_SOCKET;
 use libc::SO_NOSIGPIPE;
 
 use crate::unix::net::socket;
-use crate::unix::net::socketpair;
 use crate::unix::net::sun_path_offset;
 use crate::unix::net::InetVersion;
 use crate::unix::net::TcpSocket;
@@ -174,16 +173,10 @@ impl TcpSocket {
     }
 }
 
-impl UnixSeqpacket {
-    /// Creates a pair of connected `SOCK_SEQPACKET` sockets.
-    ///
-    /// Both returned file descriptors have the `CLOEXEC` flag set.
-    pub fn pair() -> io::Result<(UnixSeqpacket, UnixSeqpacket)> {
-        let (fd0, fd1) = socketpair(libc::AF_UNIX, libc::SOCK_SEQPACKET, 0)?;
-        let (s0, s1) = (UnixSeqpacket::from(fd0), UnixSeqpacket::from(fd1));
-        Ok((cloexec_or_close(s0)?, cloexec_or_close(s1)?))
-    }
-}
+// macOS does not support SOCK_SEQPACKET for Unix domain sockets. UnixSeqpacket::pair()
+// is therefore not provided on macOS; callers that need a connected socket pair should use
+// UnixStream::pair() or create a raw socketpair(AF_UNIX, SOCK_STREAM, 0) and add their
+// own framing layer for message boundaries (as sys/macos/tube.rs does for Tube).
 
 impl UnixSeqpacketListener {
     /// Blocks for and accepts a new incoming connection and returns the socket associated with that
