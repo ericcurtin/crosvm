@@ -4,11 +4,15 @@
 
 pub mod descriptor;
 pub mod file_traits;
+pub(crate) mod ioctl_common;
+mod notifiers;
+pub mod poll;
 #[macro_use]
 pub mod handle_eintr;
 mod fcntl;
 mod file_flags;
 mod iobuf;
+pub(crate) mod mmap;
 pub mod net;
 mod sock_ctrl_msg;
 mod stream_channel;
